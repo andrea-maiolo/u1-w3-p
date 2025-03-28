@@ -65,7 +65,7 @@ const dice = function () {
   return Math.ceil(Math.random() * 6);
 };
 
-console.log(dice());
+// console.log(dice());
 
 /* ESERCIZIO 2
   Crea una funzione chiamata "whoIsBigger" che riceve due numeri come parametri e ritorna il maggiore dei due.
@@ -74,13 +74,16 @@ console.log(dice());
 const whoIsBigger = function (a, b) {
   if (a > b) {
     return a;
-  } else {
+  } else if (b > a) {
     return b;
+  } else {
+    return "sono uguali";
   }
 };
 
 console.log(whoIsBigger(25, 85));
 console.log(whoIsBigger(9, 2));
+console.log(whoIsBigger(5, 5));
 
 /* ESERCIZIO 3
   Crea una funzione chiamata "splitMe" che riceve una stringa come parametro e ritorna un'array contenente ogni parola della stringa.
@@ -123,7 +126,6 @@ console.log(deleteOne("hello", false));
 
 /* ESERCIZIO 5
   Crea una funzione chiamata "onlyLetters" che riceve una stringa come parametro e la ritorna eliminando tutte le cifre numeriche.
-
   Es.: onlyLetters("I have 4 dogs") => ritorna "I have dogs"
 */
 
@@ -140,24 +142,35 @@ const onlyLetters = function (string) {
   return result.join("");
 };
 
-onlyLetters("I have 4 dogs");
+//con regexp e replace
+const onlyLetters2 = function (string) {
+  //tutte le cifre in maniera globale
+  let myRegex = /\d/g;
+  let result = string.replace(myRegex, "");
+  return result;
+};
+
+console.log(onlyLetters("I have 4 dogs"));
 console.log(onlyLetters("i have 45 dogs and 78 cats"));
+console.log(onlyLetters2("I have 4 dogs"));
+console.log(onlyLetters2("i have 45 dogs and 78 cats"));
 
 /* ESERCIZIO 6
   Crea una funzione chiamata "isThisAnEmail" che riceve una stringa come parametro e ritorna true
    se la stringa è un valido indirizzo email.
 */
-// TODO
+
 const isThisAnEmail = function (string) {
-  // check if string has something before @
-  // check for @
-  // check for . after @
-  // and check for text after .
-  let myArr = string.split("");
-  for (let i = 0; i < myArr.length; i++) {
-    const ele = myArr[i];
+  if (string.includes("@") && string.indexOf("@") > 0 && string.indexOf("@") < string.indexOf(".")) {
+    return true;
+  } else {
+    return false;
   }
 };
+
+console.log(isThisAnEmail("andrea@gmail.com"));
+console.log(isThisAnEmail("@andrea.gmail.com"));
+console.log(isThisAnEmail("andrea#gmailcom"));
 
 /* ESERCIZIO 7
   Scrivi una funzione chiamata "whatDayIsIt" che ritorna il giorno della settimana corrente.
@@ -204,19 +217,37 @@ console.log(rollTheDices(4));
   Scrivi una funzione chiamata "howManyDays" che riceve una data come parametro e ritorna il numero di giorni trascorsi da tale data.
 */
 
-//TODO
 const howManyDays = function (date) {
   const currentDate = new Date();
+  let dateFormat = new Date(date);
+  let differenceInMilliseconds = currentDate - dateFormat;
+  let sec = differenceInMilliseconds / 1000;
+  let min = sec / 60;
+  let hours = min / 60;
+  let days = hours / 24;
+  return Math.floor(days);
 };
+
+console.log(howManyDays("2022-04-11"));
+console.log(howManyDays("2025-03-27"));
 
 /* ESERCIZIO 10
   Scrivi una funzione chiamata "isTodayMyBirthday" che deve ritornare true se oggi è il tuo compleanno, falso negli altri casi.
 */
 
-//TODO
 const isTodayMyBirthday = function () {
-  const myBday = "03 / 04";
+  const currentDate = new Date();
+  // const myBday = new Date("03-28");
+  const myBday = new Date("04-03");
+
+  if (currentDate.getMonth() + 1 == myBday.getMonth() + 1 && currentDate.getDate() == myBday.getDate()) {
+    return true;
+  } else {
+    return false;
+  }
 };
+
+console.log(isTodayMyBirthday());
 
 // Arrays & Oggetti
 
@@ -330,34 +361,38 @@ const movies = [
 */
 
 const deleteProp = function (obj, string) {
-  let makeItRight = string[0].toUpperCase();
-  string = makeItRight + string.slice(1);
-  if (obj[string]) {
-    delete obj[string];
-    return obj;
-  } else {
-    return "proprietà non trovata";
+  const objCopy = structuredClone(obj);
+  if (objCopy[string]) {
+    delete objCopy[string];
+    return objCopy;
   }
 };
 
-// console.log(deleteProp(movies[9], "Title"));
-// console.log(deleteProp(movies[4], "title"));
-// console.log(deleteProp(movies[0], "budget"));
+console.log(deleteProp(movies[9], "Title"));
+console.log(deleteProp(movies[0], "imdbID"));
 
 /* ESERCIZIO 12
   Scrivi una funzione chiamata "newestMovie" che trova il film più recente nell'array "movies" fornito.
 */
 
-//TODO
-// const newestMovie = function (array) {
-//   for (let i = 0; i < array.length; i++) {
-//     const element = array[i];
-//     if(element.Year >
+const newestMovie = function (array) {
+  let years = [];
+  for (let i = 0; i < array.length; i++) {
+    const movie = array[i];
+    years.push(movie.Year);
+  }
+  let sorted = years.sort();
+  let newestMovieYear = sorted[sorted.length - 1];
 
-//   }
-// };
+  for (let j = 0; j < array.length; j++) {
+    const ele = array[j];
+    if (ele.Year === newestMovieYear) {
+      return array[j];
+    }
+  }
+};
 
-// console.log(newestMovie(movies));
+console.log(newestMovie(movies));
 
 /* ESERCIZIO 13
   Scrivi una funzione chiamata countMovies che ritorna il numero di film contenuti nell'array "movies" fornito.
@@ -424,17 +459,13 @@ console.log(sumAllTheYears(movies));
    ritorna i film nell'array "movies" fornito che la contengono nel titolo.
 */
 
-//TODO
 const searchByTitle = function (string) {
-  for (let i = 0; i < movies.length; i++) {
-    const ele = movies[i];
-    if (ele.Title === string) {
-    }
-  }
+  return movies.filter((movie) => movie.Title.toLowerCase().includes(string.toLowerCase()));
 };
 
-console.log(searchByTitle("Avengers: Infinity War"));
-console.log(searchByTitle("Lords of Dogtown"));
+console.log("searh by title", searchByTitle("Avengers: Infinity War"));
+console.log("searh by title", searchByTitle("OF"));
+console.log("searh by title", searchByTitle("inity"));
 
 /* ESERCIZIO 18
   Scrivi una funzione chiamata "searchAndDivide" che riceve una stringa come parametro e 
@@ -442,7 +473,23 @@ console.log(searchByTitle("Lords of Dogtown"));
   "match" deve includere tutti i film dell'array "movies" fornito che contengono 
   la stringa fornita all'interno del proprio titolo, mentre "unmatch" deve includere tutti i rimanenti.
 */
-//TODO
+
+const searchAndDivide = function (string) {
+  const myObj = { match: [], unmatch: [] };
+  for (let i = 0; i < movies.length; i++) {
+    const movie = movies[i];
+    if (movie.Title.toLowerCase().includes(string.toLowerCase())) {
+      myObj.match.push(movie);
+    } else {
+      myObj.unmatch.push(movie);
+    }
+  }
+  return myObj;
+};
+
+console.log("search and divide", searchAndDivide("the"));
+console.log("search and divide", searchAndDivide("avenger"));
+console.log("search and divide", searchAndDivide("flies"));
 
 /* ESERCIZIO 19
   Scrivi una funzione chiamata "removeIndex" che riceve un numero come parametro e 
@@ -490,7 +537,7 @@ const printAllTd = function () {
   let allTd = document.getElementsByTagName("td");
   for (let i = 0; i < allTd.length; i++) {
     const ele = allTd[i];
-    console.log(ele);
+    console.log(ele.innerText);
   }
 };
 
@@ -527,16 +574,17 @@ addOne();
   Scrivi una funzione per svuotare la lista non ordinata con id "myList".
 */
 
-//TODO
-// const svuota = function () {
-//   let myList = document.getElementById("myList");
-//   let allLi = document.querySelectorAll("#myList li");
-//   console.log(allLi[0]);
+const svuota = function () {
+  let myList = document.getElementById("myList");
+  let allLi = document.querySelectorAll("#myList li");
+  console.log(allLi);
 
-//   myList.remove(allLi[0]);
-// };
+  allLi.forEach((ele) => {
+    myList.removeChild(ele);
+  });
+};
 
-// svuota();
+svuota();
 
 /* ESERCIZIO 26
   Scrivi una funzione per aggiungere ad ogni tag <tr> la classe CSS "test"
@@ -555,7 +603,8 @@ addTest();
 // [EXTRA] JS Avanzato
 
 /* ESERCIZIO 27
-  Crea una funzione chiamata "halfTree" che riceve un numero come parametro e costruisce un mezzo albero di "*" (asterischi) dell'altezza fornita.
+  Crea una funzione chiamata "halfTree" che riceve un numero come
+  parametro e costruisce un mezzo albero di "*" (asterischi) dell'altezza fornita.
 
   Esempio:
   halfTree(3)
@@ -565,6 +614,17 @@ addTest();
   ***
 
 */
+
+const halfTree = function (num) {
+  let myArr = [];
+  for (let i = 0; i < num; i++) {
+    let currentPrint = "*";
+    myArr.push(currentPrint);
+  }
+};
+
+halfTree(3);
+halfTree(9);
 
 /* ESERCIZIO 28
   Crea una funzione chiamata "tree" che riceve un numero come parametro e costruisce un albero di "*" (asterischi) dell'altezza fornita.
@@ -581,5 +641,3 @@ addTest();
 /* ESERCIZIO 29
   Crea una funzione chiamata "isItPrime" che riceve un numero come parametro e ritorna true se il numero fornito è un numero primo.
 */
-
-/* Questo array viene usato per gli esercizi. Non modificarlo. */
