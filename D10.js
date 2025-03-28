@@ -616,13 +616,23 @@ addTest();
 */
 
 const halfTree = function (num) {
-  let myArr = [];
+  if (num === 0) {
+    return "non si puo fare";
+  }
+
+  let hash = "*";
+
   for (let i = 0; i < num; i++) {
-    let currentPrint = "*";
-    myArr.push(currentPrint);
+    if (i === 0) {
+      console.log(hash);
+    } else {
+      hash = hash.concat("*");
+      console.log(hash);
+    }
   }
 };
 
+halfTree(1);
 halfTree(3);
 halfTree(9);
 
@@ -637,6 +647,39 @@ halfTree(9);
   *****
 
 */
+
+// const tree = function (num) {
+//   if (num === 0) {
+//     return "non si puo fare";
+//   }
+//   if (num === 1) {
+//     console.log("*");
+//   }
+
+//   let base = num + (num - 1);
+//   console.log(base);
+
+//   let hash = "";
+
+//   for (let i = 0; i < base; i++) {
+//     hash += "*";
+//   }
+
+//   console.log(hash);
+
+//   let arr = [hash];
+//   console.log(arr);
+
+//   for (let j = 0; j < num; j++) {
+//     hash = " " + hash.slice(1, -1) + " ";
+//     arr.push(hash);
+//   }
+
+//   console.log(arr);
+// };
+
+// tree(3);
+// // tree(9);
 
 /* ESERCIZIO 29
   Crea una funzione chiamata "isItPrime" che riceve un numero come parametro e ritorna true se il numero fornito è un numero primo.
